@@ -42,8 +42,6 @@ public class ProfileController {
         profile.setId(profileDTO.id());
         Profile created = profileService.createProfile(profile);
 
-        List<ReturnUserDTO> returnUserDTOList = created.getUsuarios().stream().map(user
-                -> new ReturnUserDTO(user.getId(), user.getName())).toList();
 
         ReturnProfileDTO returnProfileDTO = new ReturnProfileDTO(created.getId(),created.getDescription(), List.of());
 
