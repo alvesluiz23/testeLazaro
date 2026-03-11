@@ -1,6 +1,8 @@
 package com.testeLazaroBackend.Backend.Controllers;
 
+import com.testeLazaroBackend.Backend.DTO.GetUserReturnDTO;
 import com.testeLazaroBackend.Backend.DTO.UserDTO;
+import com.testeLazaroBackend.Backend.Entities.Profile;
 import com.testeLazaroBackend.Backend.Entities.User;
 import com.testeLazaroBackend.Backend.Exceptions.EmptyProfilesException;
 import com.testeLazaroBackend.Backend.Exceptions.ProfilesNotFoundException;
@@ -10,6 +12,7 @@ import com.testeLazaroBackend.Backend.Services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -22,15 +25,13 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/")
-    public String marmelada(){
-        return "marmelada";
-    }
-
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUser(@PathVariable("id") UUID userId) {
+    public ResponseEntity<GetUserReturnDTO> getUser(@PathVariable("id") UUID userId) {
         User user = userService.getUser(userId);
-        return ResponseEntity.ok(user);
+        List<String> profiles = user.getProfiles().stream().map(Profile::getDescription).toList();
+        GetUserReturnDTO getUserReturnDTO = new GetUserReturnDTO(user.getId(), user.getName(), profiles);
+
+        return ResponseEntity.ok(getUserReturnDTO);
     }
 
     @ExceptionHandler(UserNotFoundException.class)
