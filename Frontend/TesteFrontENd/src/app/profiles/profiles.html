@@ -1,0 +1,59 @@
+<section>
+  <p>Profiles</p>
+
+  @switch (mode) {
+    @case (0) {
+      <div>
+        <button (click)="profileService.fetchProfiles()" [disabled]="profileService.loading()">Reload</button>
+        <button (click)="startCreate()" [disabled]="profileService.loading()">Create profile</button>
+      </div>
+
+      @if (profileService.profiles().length === 0) {
+        <p>No profiles found</p>
+      }
+
+      @for (profile of profileService.profiles(); track profile.id) {
+        <div class="profile-row">
+          <p>{{ profile.description }}</p>
+          <div class="actions">
+            <button (click)="startEdit(profile)" [disabled]="profileService.loading()">Edit</button>
+            <button (click)="deleteProfile(profile)" [disabled]="profileService.loading()">Delete</button>
+          </div>
+        </div>
+      }
+    }
+
+    @case (1) {
+      <p>Create profile</p>
+      <input #idInput [value]="idText" (input)="idText = idInput.value" placeholder="Id" />
+      <input #descInput [value]="description" (input)="onDescriptionChange(descInput.value)" />
+
+      @for (message of errorMessages(); track message) {
+        <p>{{ message }}</p>
+      }
+
+      <div>
+        <button (click)="cancel()" [disabled]="profileService.loading()">Cancel</button>
+        <button (click)="saveCreate()" [disabled]="profileService.loading()">Save</button>
+      </div>
+    }
+
+    @case (2) {
+      <p>Edit profile</p>
+      <input #descInput [value]="description" (input)="onDescriptionChange(descInput.value)" />
+
+      @for (message of errorMessages(); track message) {
+        <p>{{ message }}</p>
+      }
+
+      <div>
+        <button (click)="cancel()" [disabled]="profileService.loading()">Cancel</button>
+        <button (click)="saveEdit()" [disabled]="profileService.loading()">Save</button>
+      </div>
+    }
+  }
+
+  @if (profileService.loading()) {
+    <p>Loading...</p>
+  }
+</section>

@@ -21,7 +21,6 @@ export class UserDisplay {
   }
 
   openDelete() {
-     console.log("entrou aqui")
      this.deleteClicked.emit();
   }
 }

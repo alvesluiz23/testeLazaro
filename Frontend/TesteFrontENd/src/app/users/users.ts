@@ -6,10 +6,11 @@ import { ModifingProfile } from '../modifing-profile/modifing-profile';
 import { ProfileService } from '../service/profile-service';
 import { PageInterface } from '../interface/page-interface';
 import { DeletingUser } from '../deleting-user/deleting-user';
+import { CreatingUser } from "../creating-user/creating-user";
 
 @Component({
   selector: 'app-users',
-  imports: [UserDisplay,DeletingUser, ModifingProfile],
+  imports: [UserDisplay, CreatingUser, DeletingUser, ModifingProfile],
   templateUrl: './users.html',
   styleUrl: './users.css',
 })
@@ -29,8 +30,12 @@ export class Users {
     }
 
     openDelete(user: UserInterface) {
-      console.log("entrou aqui")
+      this.selectedUser = user;
       this.mode = 2;
+    }
+
+    openCreate() {
+      this.mode = 3;
     }
 
     backToView() {

@@ -44,7 +44,6 @@ export class ModifingProfile {
       ...this.user,
       profiles: this.user.profiles.map(p => ({ ...p }))
     };
-    console.log(this.actualStateUser);
     this.errors = new Map<string, string>();
     this.profileService.fetchProfiles();
 
@@ -79,7 +78,6 @@ export class ModifingProfile {
       return;
     }
     this.actualStateUser.name = name;
-    console.log(this.actualStateUser);
     this.errors = new Map<string, string>();
   }
 

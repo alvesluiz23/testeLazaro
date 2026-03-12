@@ -1,9 +1,12 @@
 <div>
     @switch (mode){
     @case(0){
+    @if(userService.users().length == 0){
+    <p>There are not users registered</p>
+    }
     @for (user of userService.users(); track user.id) {
-    <app-user-display [name]="user.name" [profiles]="user.profiles" [id]="user.id"
-        (editClicked)="openEdit(user)" (deleteClicked)="openDelete(user)"></app-user-display>
+    <app-user-display [name]="user.name" [profiles]="user.profiles" [id]="user.id" (editClicked)="openEdit(user)"
+        (deleteClicked)="openDelete(user)"></app-user-display>
 
     }
     <div>
@@ -11,6 +14,10 @@
         <button (click)="changePage(page)"> {{page+1}}</button>
         }
     </div>
+    <div>
+        <button (click)="openCreate()">Create user</button>
+    </div>
+
     }
     @case (1) {
     <button (click)="backToView()">Voltar</button>
@@ -18,9 +25,13 @@
 
     }
     @case (2) {
-        <app-deleting-user [userId]="selectedUser.id"></app-deleting-user>
-        }
-    
+    <app-deleting-user [userId]="selectedUser.id" (deleteEvent)="backToView()"></app-deleting-user>
+    }
+    @case (3) {
+     <app-creating-user (createEvent)="backToView()"></app-creating-user>
+    }
+
+
     }
 
 

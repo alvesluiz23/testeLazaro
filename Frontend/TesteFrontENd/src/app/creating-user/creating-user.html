@@ -1,0 +1,38 @@
+
+<section>
+    <p>Register user</p>
+
+    <div class="alter-name-display">
+        <input #nameInput (input)="onNameChange(nameInput.value)">
+    </div>
+
+    @for (profile of newUser.profiles ; track profile.id) {
+    <div class="show-user-profiles">
+        <div class="profile-infos-display">
+            <p>{{profile.description}}</p>
+            <button (click)="deleteItem(profile)" [disabled]="userService.loading()">Delete</button>
+        </div>
+    </div>
+    }
+
+    @for (message of errorMessages(); track message) {
+        <p>{{ message }}</p>
+    }
+
+    <div class="profile-infos-display">
+        <select #profileSelect>
+            @for (profile of getProfiles(); track profile.id) {
+            <option [value]="profile.id">
+                {{ profile.description }}
+            </option>
+            }
+        </select>
+        <button (click)="onProfileChange(profileSelect.value)" [disabled]="userService.loading()">Incluir</button>
+    </div>
+
+    <button (click)="saveChanges()" [disabled]="userService.loading()">Save</button>
+    @if (userService.loading()) {
+        <p>Loading...</p>
+    }
+
+</section>

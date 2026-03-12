@@ -3,6 +3,7 @@ import { inject, Injectable, Signal, signal } from '@angular/core';
 import { UserInterface } from '../interface/user-interface';
 import { PageInterface } from '../interface/page-interface';
 import { ProfileService } from './profile-service';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -21,41 +22,19 @@ export class UserService {
     profiles: []
   });
   
-  baseUrl = "localhost:8080"
+  baseUrl = 'http://localhost:8080';
 
   fetchUsers(page: number) {
-
-    this.http
-      .get<PageInterface<UserInterface>>(`http://${this.baseUrl}/users?page=${page}&size=5`)
-      .subscribe((response) => {
-         this.users.set(response.content);
-         
-         this.pages.set(Array.from({length: response.totalPages}, (_,i) => i));
-         console.log(this.pages);
-      });
-  }
-
-  getUser(id: string){
-    this.http
-    .get<UserInterface>(`http://${this.baseUrl}/users/${id}`)
-    .subscribe( response =>
-        this.user.set(response)
-    );
-
-  }
-
-  async updateUsers(id: string, userDTO: UserInterface): Promise<void> {
     this.loading.set(true);
     this.http
-      .put<UserInterface>(`http://${this.baseUrl}:8080/users/${id}`, userDTO)
+      .get<PageInterface<UserInterface>>(`${this.baseUrl}/users?page=${page}&size=5`)
       .subscribe({
         next: (response) => {
-          this.user.set(response);
-          console.log(this.user);
+          this.users.set(response.content);
+          this.pages.set(Array.from({ length: response.totalPages }, (_, i) => i));
         },
-        error: (error) => {
+        error: () => {
           this.loading.set(false);
-          throw new Error("Error updating user with ID " + id + ": " + error.message);
         },
         complete: () => {
           this.loading.set(false);
@@ -63,21 +42,53 @@ export class UserService {
       });
   }
 
+  getUser(id: string) {
+    this.loading.set(true);
+    this.http.get<UserInterface>(`${this.baseUrl}/users/${id}`).subscribe({
+      next: (response) => {
+        this.user.set(response);
+      },
+      error: () => {
+        this.loading.set(false);
+      },
+      complete: () => {
+        this.loading.set(false);
+      }
+    });
+  }
+
+  async createUser(userDTO: UserInterface): Promise<UserInterface> {
+    this.loading.set(true);
+    try {
+      const created = await firstValueFrom(
+        this.http.post<UserInterface>(`${this.baseUrl}/users`, userDTO)
+      );
+      return created;
+    } finally {
+      this.loading.set(false);
+    }
+  }
+
+  async updateUsers(id: string, userDTO: UserInterface): Promise<void> {
+    this.loading.set(true);
+    try {
+      const updated = await firstValueFrom(
+        this.http.put<UserInterface>(`${this.baseUrl}/users/${id}`, userDTO)
+      );
+      this.user.set(updated);
+    } finally {
+      this.loading.set(false);
+    }
+  }
+
 
   async deleteUser(id: string): Promise<void> {
     this.loading.set(true);
-    await this.http
-      .delete(`http://localhost:8080/users/${id}`)
-      .subscribe(() => {
-        console.log(`User with ID ${id} has been deleted.`);
-      },
-      error => {
-        this.loading.set(false);
-        throw new Error("Error deleting user with ID " + id + ": " + error.message);
-      },
-      () => {
-        this.loading.set(false);
-      });
+    try {
+      await firstValueFrom(this.http.delete(`${this.baseUrl}/users/${id}`));
+    } finally {
+      this.loading.set(false);
     }
+  }
     
 }

@@ -2,28 +2,20 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 
-import { ModifingProfile } from './modifing-profile';
+import { CreatingUser } from './creating-user';
 
-describe('ModifingProfile', () => {
-  let component: ModifingProfile;
-  let fixture: ComponentFixture<ModifingProfile>;
+describe('CreatingUser', () => {
+  let component: CreatingUser;
+  let fixture: ComponentFixture<CreatingUser>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ModifingProfile],
+      imports: [CreatingUser],
       providers: [provideHttpClient(), provideHttpClientTesting()],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ModifingProfile);
+    fixture = TestBed.createComponent(CreatingUser);
     component = fixture.componentInstance;
-
-    component.user = {
-      id: '1',
-      name: 'Test user name',
-      profiles: [{ id: 1, description: 'Profile 1' }],
-    };
-
-    fixture.detectChanges();
     await fixture.whenStable();
   });
 

@@ -18,9 +18,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static java.lang.StableValue.map;
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
-
 @Service
 public record UserService(UserRepository userRepository, ProfileRepository profileRepository) {
 

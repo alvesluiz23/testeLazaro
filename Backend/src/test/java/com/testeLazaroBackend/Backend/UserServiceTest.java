@@ -1,5 +1,6 @@
 package com.testeLazaroBackend.Backend;
 
+import com.testeLazaroBackend.Backend.DTO.ProfileDTO;
 import com.testeLazaroBackend.Backend.DTO.UserDTO;
 import com.testeLazaroBackend.Backend.Entities.Profile;
 import com.testeLazaroBackend.Backend.Entities.User;
@@ -13,10 +14,12 @@ import com.testeLazaroBackend.Backend.Services.UserService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Array;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -38,30 +41,25 @@ public class UserServiceTest {
         UserDTO userDTO = new UserDTO(
                 UUID.randomUUID(),
                 "Luiz",
-                List.of(10)
+                List.of(new ProfileDTO(1, ""))
         );
 
-        when(profileRepository.countByIdIn(userDTO.profileIds()))
-                .thenReturn((long) userDTO.profileIds().size());
-        assertThatThrownBy(() -> userService.createUser(userDTO))
-                .isInstanceOf(UserNameTooShortException.class)
-                .hasMessageContaining("name");
+        assertThrows(UserNameTooShortException.class, () -> userService.createUser(userDTO));
     }
 
     @Test
     void shouldThrowExceptionWhenProfilesDoNotExist() {
-        Integer id1 = 01;
-        Integer id2 = 02;
+        Integer id1 = 1;
+        Integer id2 = 2;
         UserDTO dto = new UserDTO(
                 null,
                 "Luiz Eduardo",
-                List.of(id1, id2)
+                List.of(new ProfileDTO(id1, ""), new ProfileDTO(id2, ""))
         );
 
-        when(profileRepository.findAllById(dto.profileIds())).thenReturn(Arrays.asList());
-        assertThrows(ProfilesNotFoundException.class, () -> {
-            userService.createUser(dto);
-        });
+        when(profileRepository.findAllById(List.of(id1, id2))).thenReturn(List.of());
+
+        assertThrows(ProfilesNotFoundException.class, () -> userService.createUser(dto));
     }
 
     @Test
@@ -75,7 +73,11 @@ public class UserServiceTest {
     @Test
     void shouldCreateUserWhenAllProfilesExist() {
         UUID userId = UUID.randomUUID();
-        UserDTO userDTO = new UserDTO(null, "Luiz Eduardo", List.of(01, 02));
+        UserDTO userDTO = new UserDTO(
+                null,
+                "Luiz Eduardo",
+                List.of(new ProfileDTO(1, ""), new ProfileDTO(2, ""))
+        );
 
         clearInvocations(userRepository);
         clearInvocations(profileRepository);
@@ -94,7 +96,7 @@ public class UserServiceTest {
 
         List<Profile> mockedProfiles = Arrays.asList(profile1, profile2);
 
-        when(profileRepository.findAllById(Arrays.asList(1,2))).thenReturn(mockedProfiles);
+        when(profileRepository.findAllById(Arrays.asList(1, 2))).thenReturn(mockedProfiles);
         when(userRepository.save(any(User.class))).thenReturn(savedUser);
 
         User result = userService.createUser(userDTO);
@@ -102,7 +104,7 @@ public class UserServiceTest {
         assertEquals("Luiz Eduardo", result.getName());
         assertEquals(userId, result.getId());
 
-        verify(profileRepository, times(1)).findAllById(Arrays.asList(1,2));
+        verify(profileRepository, times(1)).findAllById(Arrays.asList(1, 2));
         verify(userRepository, times(1)).save(any(User.class));
     }
 
@@ -153,13 +155,17 @@ public class UserServiceTest {
 
 
         UUID userId = UUID.randomUUID();
-        UserDTO userDTO = new UserDTO(userId, "Luiz Eduardo", List.of(1, 2));
+        UserDTO userDTO = new UserDTO(
+                userId,
+                "Luiz Eduardo",
+                List.of(new ProfileDTO(1, ""), new ProfileDTO(2, ""))
+        );
         User user = new User();
         user.setId(userId);
         user.setName("Luiz Carlos");
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-        when(profileRepository.findAllById(userDTO.profileIds())).thenReturn(Arrays.asList(profile1, profile2));
+        when(profileRepository.findAllById(Arrays.asList(1, 2))).thenReturn(Arrays.asList(profile1, profile2));
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         User updated = userService.updateUser(userId,userDTO);
@@ -167,7 +173,7 @@ public class UserServiceTest {
         assertNotNull(updated);
         assertEquals("Luiz Eduardo", updated.getName());
         verify(userRepository).findById(userId);
-        verify(profileRepository).findAllById(userDTO.profileIds());
+        verify(profileRepository).findAllById(Arrays.asList(1, 2));
         verify(userRepository).save(user);
     }
 
