@@ -1,0 +1,12 @@
+<div class="user-content">
+    <p>{{name}}</p>
+
+    <p>Profiles = [</p>
+    @for (profile of profiles; track profile) {
+     <p> {{profile.description| lowercase}} </p>
+    }
+    <p>]</p>
+    
+    <button (click)="editUser()"> Edit</button>
+    <button (click)="openDelete()"> Delete</button>
+</div>

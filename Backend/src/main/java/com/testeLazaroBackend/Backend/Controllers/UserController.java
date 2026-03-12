@@ -1,6 +1,7 @@
 package com.testeLazaroBackend.Backend.Controllers;
 
 import com.testeLazaroBackend.Backend.DTO.GetUserReturnDTO;
+import com.testeLazaroBackend.Backend.DTO.ProfileDTO;
 import com.testeLazaroBackend.Backend.DTO.UserDTO;
 import com.testeLazaroBackend.Backend.Entities.Profile;
 import com.testeLazaroBackend.Backend.Entities.User;
@@ -9,9 +10,15 @@ import com.testeLazaroBackend.Backend.Exceptions.ProfilesNotFoundException;
 import com.testeLazaroBackend.Backend.Exceptions.UserNameTooShortException;
 import com.testeLazaroBackend.Backend.Exceptions.UserNotFoundException;
 import com.testeLazaroBackend.Backend.Services.UserService;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,10 +32,27 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping()
+    public ResponseEntity<Page<GetUserReturnDTO>> getUser(@PageableDefault(size = 5) Pageable pageable) {
+        Page<User> users = userService.getUser(pageable);
+
+        Page<GetUserReturnDTO> dtoPage = users.map(user -> {
+            List<ProfileDTO> profiles = user.getProfiles()
+                    .stream()
+                    .map(profile -> new ProfileDTO(profile.getId(), profile.getDescription()))
+                    .toList();
+
+            return new GetUserReturnDTO(user.getId(), user.getName(), profiles);
+        });
+
+        return ResponseEntity.ok(dtoPage);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<GetUserReturnDTO> getUser(@PathVariable("id") UUID userId) {
         User user = userService.getUser(userId);
-        List<String> profiles = user.getProfiles().stream().map(Profile::getDescription).toList();
+        List<ProfileDTO> profiles = user.getProfiles().stream().map(profile ->
+                new ProfileDTO(profile.getId(), profile.getDescription())).toList();
         GetUserReturnDTO getUserReturnDTO = new GetUserReturnDTO(user.getId(), user.getName(), profiles);
 
         return ResponseEntity.ok(getUserReturnDTO);
@@ -51,9 +75,14 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable UUID id, @RequestBody UserDTO userDTO) {
+    public ResponseEntity<GetUserReturnDTO> updateUser(@PathVariable UUID id, @RequestBody UserDTO userDTO) {
         User user = userService.updateUser(id,userDTO);
-        return ResponseEntity.status(200).body(user);
+
+        List<ProfileDTO> profiles = user.getProfiles().stream().map(profile ->
+                new ProfileDTO(profile.getId(), profile.getDescription())).toList();
+        GetUserReturnDTO getUserReturnDTO = new GetUserReturnDTO(user.getId(), user.getName(), profiles);
+
+        return ResponseEntity.status(200).body(getUserReturnDTO);
     }
 
     @DeleteMapping("/{id}")

@@ -1,14 +1,12 @@
 package com.testeLazaroBackend.Backend.Controllers;
 
-import com.testeLazaroBackend.Backend.DTO.ProfileDTO;
-import com.testeLazaroBackend.Backend.DTO.ReturnProfileDTO;
-import com.testeLazaroBackend.Backend.DTO.ReturnUserDTO;
-import com.testeLazaroBackend.Backend.DTO.UpdateDTO;
+import com.testeLazaroBackend.Backend.DTO.*;
 import com.testeLazaroBackend.Backend.Entities.Profile;
 import com.testeLazaroBackend.Backend.Exceptions.ProfileDescriptionTooShortException;
 import com.testeLazaroBackend.Backend.Exceptions.ProfileInUseException;
 import com.testeLazaroBackend.Backend.Exceptions.ProfilesNotFoundException;
 import com.testeLazaroBackend.Backend.Services.ProfileService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +20,20 @@ public class ProfileController {
 
     public ProfileController(ProfileService profileService) {
         this.profileService = profileService;
+    }
+
+    @GetMapping("/")
+    public ResponseEntity<List<ReturnProfileDTO>> getProfile() {
+        List<Profile> profiles = profileService.getAll();
+
+        List<ReturnProfileDTO> dtoProfiles = profiles.stream().map(profile -> {
+            List<ReturnUserDTO> users = profile.getUsuarios().stream().map(user -> new ReturnUserDTO(user.getId(), user.getName()))
+                    .toList();
+
+            return new ReturnProfileDTO(profile.getId(), profile.getDescription(), users);
+        }).toList();
+
+        return ResponseEntity.ok(dtoProfiles);
     }
 
     @GetMapping("/{id}")
@@ -78,7 +90,5 @@ public class ProfileController {
         profileService.deleteProfile(profileId);
         return ResponseEntity.noContent().build();
     }
-
-
 
 }

@@ -1,0 +1,27 @@
+<div>
+    @switch (mode){
+    @case(0){
+    @for (user of userService.users(); track user.id) {
+    <app-user-display [name]="user.name" [profiles]="user.profiles" [id]="user.id"
+        (editClicked)="openEdit(user)" (deleteClicked)="openDelete(user)"></app-user-display>
+
+    }
+    <div>
+        @for (page of userService.pages(); track page) {
+        <button (click)="changePage(page)"> {{page+1}}</button>
+        }
+    </div>
+    }
+    @case (1) {
+    <button (click)="backToView()">Voltar</button>
+    <app-modifing-profile [user]="selectedUser"></app-modifing-profile>
+
+    }
+    @case (2) {
+        <app-deleting-user [userId]="selectedUser.id"></app-deleting-user>
+        }
+    
+    }
+
+
+</div>

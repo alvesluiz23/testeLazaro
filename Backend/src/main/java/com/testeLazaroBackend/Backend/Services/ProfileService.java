@@ -19,6 +19,10 @@ public record ProfileService(ProfileRepository profileRepository) {
         return profileRepository.save(profile);
     }
 
+    public List<Profile> getAll() {
+        return (List<Profile>) profileRepository.findAll();
+    }
+
     public Profile getProfileById(Integer id) {
         return profileRepository.findById(id)
                 .orElseThrow(() -> new ProfilesNotFoundException(List.of(id)));

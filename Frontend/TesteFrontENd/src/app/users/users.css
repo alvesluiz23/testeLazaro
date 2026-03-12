@@ -1,0 +1,5 @@
+.show-user-profiles{
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
