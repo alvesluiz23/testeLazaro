@@ -4,6 +4,7 @@ import { ProfileInterface } from '../interface/user-profile-interface';
 import { UserService } from '../service/user-service';
 import { ProfileService } from '../service/profile-service';
 import { NgModel } from '@angular/forms';
+import { errorToAlertMessage } from '../utils/http-error';
 
 @Component({
   selector: 'app-modifing-profile',
@@ -94,8 +95,8 @@ export class ModifingProfile {
         profiles: this.userService.user()!.profiles.map(p => ({ ...p }))
       };
       alert("Changes saved successfully!");
-    } catch {
-      alert("An error occurred while saving changes!");
+    } catch (error) {
+      alert(errorToAlertMessage(error));
     }
   }
 }

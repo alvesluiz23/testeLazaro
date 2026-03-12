@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { UserService } from '../service/user-service';
+import { errorToAlertMessage } from '../utils/http-error';
 
 @Component({
   selector: 'app-deleting-user',
@@ -22,8 +23,8 @@ export class DeletingUser {
       await this.userService.deleteUser(this.userId);
       alert("User with ID " + this.userId + " deleted successfully.");
       this.deleteEvent.emit();
-    } catch {
-      alert("An error occurred while deleting the user!");
+    } catch (error) {
+      alert(errorToAlertMessage(error));
     }
   }
 

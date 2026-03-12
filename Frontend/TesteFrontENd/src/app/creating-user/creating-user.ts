@@ -3,6 +3,7 @@ import { UserInterface } from '../interface/user-interface';
 import { UserService } from '../service/user-service';
 import { ProfileInterface } from '../interface/user-profile-interface';
 import { ProfileService } from '../service/profile-service';
+import { errorToAlertMessage } from '../utils/http-error';
 
 @Component({
   selector: 'app-creating-user',
@@ -96,8 +97,8 @@ export class CreatingUser {
       this.errors = new Map<string, string>();
       alert('User created successfully!');
       this.createEvent.emit();
-    } catch {
-      alert('An error occurred while creating the user!');
+    } catch (error) {
+      alert(errorToAlertMessage(error));
     }
   }
 

@@ -2,6 +2,7 @@ import { inject, Injectable, signal } from '@angular/core';
 import { ProfileDTO } from '../dto/profile-dto';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
+import { errorToAlertMessage } from '../utils/http-error';
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +20,8 @@ export class ProfileService {
         next: (response) => {
           this.profiles.set(response);
         },
-        error: () => {
+        error: (error) => {
+          alert(errorToAlertMessage(error));
           this.loading.set(false);
         },
         complete: () => {

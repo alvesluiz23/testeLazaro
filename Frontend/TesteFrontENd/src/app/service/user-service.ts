@@ -4,6 +4,7 @@ import { UserInterface } from '../interface/user-interface';
 import { PageInterface } from '../interface/page-interface';
 import { ProfileService } from './profile-service';
 import { firstValueFrom } from 'rxjs';
+import { errorToAlertMessage } from '../utils/http-error';
 
 @Injectable({
   providedIn: 'root',
@@ -33,7 +34,8 @@ export class UserService {
           this.users.set(response.content);
           this.pages.set(Array.from({ length: response.totalPages }, (_, i) => i));
         },
-        error: () => {
+        error: (error) => {
+          alert(errorToAlertMessage(error));
           this.loading.set(false);
         },
         complete: () => {
@@ -48,7 +50,8 @@ export class UserService {
       next: (response) => {
         this.user.set(response);
       },
-      error: () => {
+      error: (error) => {
+        alert(errorToAlertMessage(error));
         this.loading.set(false);
       },
       complete: () => {

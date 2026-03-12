@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Output, inject } from '@angular/core';
 import { ProfileInterface } from '../interface/user-profile-interface';
 import { ProfileService } from '../service/profile-service';
+import { errorToAlertMessage } from '../utils/http-error';
 
 @Component({
   selector: 'app-profiles',
@@ -55,8 +56,8 @@ export class Profiles {
       this.errors.set('description', 'Description cannot be empty!');
       return;
     }
-    if (trimmed.length < 3) {
-      this.errors.set('description', 'Description must be at least 3 characters long!');
+    if (trimmed.length < 5) {
+      this.errors.set('description', 'Description must be at least 5 characters long!');
       return;
     }
     this.errors.delete('description');
@@ -83,8 +84,8 @@ export class Profiles {
       alert('Profile created successfully!');
       this.profileService.fetchProfiles();
       this.cancel();
-    } catch {
-      alert('An error occurred while creating the profile!');
+    } catch (error) {
+      alert(errorToAlertMessage(error));
     }
   }
 
@@ -101,8 +102,8 @@ export class Profiles {
       alert('Profile updated successfully!');
       this.profileService.fetchProfiles();
       this.cancel();
-    } catch {
-      alert('An error occurred while updating the profile!');
+    } catch (error) {
+      alert(errorToAlertMessage(error));
     }
   }
 
@@ -115,8 +116,8 @@ export class Profiles {
       await this.profileService.deleteProfile(profile.id);
       alert('Profile deleted successfully!');
       this.profileService.fetchProfiles();
-    } catch {
-      alert('An error occurred while deleting the profile!');
+    } catch (error) {
+      alert(errorToAlertMessage(error));
     }
   }
 }
