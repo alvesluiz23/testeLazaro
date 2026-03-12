@@ -64,9 +64,13 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<GetUserReturnDTO> createUser(@RequestBody UserDTO userDTO) {
         User user = userService.createUser(userDTO);
-        return ResponseEntity.status(201).body(user);
+        List<ProfileDTO> profiles = user.getProfiles().stream().map(profile ->
+                new ProfileDTO(profile.getId(), profile.getDescription())).toList();
+        GetUserReturnDTO getUserReturnDTO = new GetUserReturnDTO(user.getId(), user.getName(), profiles);
+
+        return ResponseEntity.status(201).body(getUserReturnDTO);
     }
 
     @ExceptionHandler({EmptyProfilesException.class, ProfilesNotFoundException.class, UserNameTooShortException.class})
