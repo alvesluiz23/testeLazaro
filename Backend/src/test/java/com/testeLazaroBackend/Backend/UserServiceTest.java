@@ -1,6 +1,6 @@
 package com.testeLazaroBackend.Backend;
 
-import com.testeLazaroBackend.Backend.DTO.ProfileDTO;
+import com.testeLazaroBackend.Backend.DTO.ProfileIdDTO;
 import com.testeLazaroBackend.Backend.DTO.UserDTO;
 import com.testeLazaroBackend.Backend.Entities.Profile;
 import com.testeLazaroBackend.Backend.Entities.User;
@@ -41,7 +41,7 @@ public class UserServiceTest {
         UserDTO userDTO = new UserDTO(
                 UUID.randomUUID(),
                 "Luiz",
-                List.of(new ProfileDTO(1, ""))
+                List.of(new ProfileIdDTO(1))
         );
 
         assertThrows(UserNameTooShortException.class, () -> userService.createUser(userDTO));
@@ -54,7 +54,7 @@ public class UserServiceTest {
         UserDTO dto = new UserDTO(
                 null,
                 "Luiz Eduardo",
-                List.of(new ProfileDTO(id1, ""), new ProfileDTO(id2, ""))
+                List.of(new ProfileIdDTO(id1), new ProfileIdDTO(id2))
         );
 
         when(profileRepository.findAllById(List.of(id1, id2))).thenReturn(List.of());
@@ -76,7 +76,7 @@ public class UserServiceTest {
         UserDTO userDTO = new UserDTO(
                 null,
                 "Luiz Eduardo",
-                List.of(new ProfileDTO(1, ""), new ProfileDTO(2, ""))
+                List.of(new ProfileIdDTO(1), new ProfileIdDTO(2))
         );
 
         clearInvocations(userRepository);
@@ -158,7 +158,7 @@ public class UserServiceTest {
         UserDTO userDTO = new UserDTO(
                 userId,
                 "Luiz Eduardo",
-                List.of(new ProfileDTO(1, ""), new ProfileDTO(2, ""))
+                List.of(new ProfileIdDTO(1), new ProfileIdDTO(2))
         );
         User user = new User();
         user.setId(userId);

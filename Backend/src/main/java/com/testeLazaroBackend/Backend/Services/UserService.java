@@ -1,6 +1,7 @@
 package com.testeLazaroBackend.Backend.Services;
 
 import com.testeLazaroBackend.Backend.DTO.ProfileDTO;
+import com.testeLazaroBackend.Backend.DTO.ProfileIdDTO;
 import com.testeLazaroBackend.Backend.DTO.UserDTO;
 import com.testeLazaroBackend.Backend.Entities.Profile;
 import com.testeLazaroBackend.Backend.Entities.User;
@@ -32,12 +33,12 @@ public record UserService(UserRepository userRepository, ProfileRepository profi
 
     private List<Profile> transformIdInProfile(UserDTO userDTO){
         List<Profile> profilesFound = (List<Profile>) profileRepository.findAllById(userDTO.profiles().
-                stream().map(ProfileDTO::id).toList());
+                stream().map(ProfileIdDTO::id).toList());
         if(profilesFound.size() != userDTO.profiles().size()){
             var idsFounds = profilesFound.stream().mapToInt(Profile::getId).boxed().toList();
             throw new ProfilesNotFoundException(
                     userDTO.profiles().stream().filter(profile->!idsFounds.contains(profile.id()))
-                            .map(ProfileDTO::id).toList()
+                            .map(ProfileIdDTO::id).toList()
             );
         }
         return profilesFound;

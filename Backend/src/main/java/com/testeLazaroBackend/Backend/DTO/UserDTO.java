@@ -15,5 +15,5 @@ public record UserDTO(
         String name,
         @NotNull(message = "Profiles list is required")
         @Size(min = 1, message = "At least one profile must be provided")
-        List<@Valid ProfileDTO> profiles
+        List<@Valid ProfileIdDTO> profiles
 ) {}
