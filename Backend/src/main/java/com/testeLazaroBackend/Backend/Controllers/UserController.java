@@ -11,6 +11,7 @@ import com.testeLazaroBackend.Backend.Exceptions.UserNameTooShortException;
 import com.testeLazaroBackend.Backend.Exceptions.UserNotFoundException;
 import com.testeLazaroBackend.Backend.Services.UserService;
 
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -64,7 +65,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<GetUserReturnDTO> createUser(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<GetUserReturnDTO> createUser(@RequestBody @Valid UserDTO userDTO) {
         User user = userService.createUser(userDTO);
         List<ProfileDTO> profiles = user.getProfiles().stream().map(profile ->
                 new ProfileDTO(profile.getId(), profile.getDescription())).toList();
@@ -79,7 +80,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<GetUserReturnDTO> updateUser(@PathVariable UUID id, @RequestBody UserDTO userDTO) {
+    public ResponseEntity<GetUserReturnDTO> updateUser(@PathVariable UUID id, @RequestBody @Valid UserDTO userDTO) {
         User user = userService.updateUser(id,userDTO);
 
         List<ProfileDTO> profiles = user.getProfiles().stream().map(profile ->

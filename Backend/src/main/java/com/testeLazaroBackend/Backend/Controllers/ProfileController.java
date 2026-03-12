@@ -6,6 +6,7 @@ import com.testeLazaroBackend.Backend.Exceptions.ProfileDescriptionTooShortExcep
 import com.testeLazaroBackend.Backend.Exceptions.ProfileInUseException;
 import com.testeLazaroBackend.Backend.Exceptions.ProfilesNotFoundException;
 import com.testeLazaroBackend.Backend.Services.ProfileService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -47,7 +48,7 @@ public class ProfileController {
     }
 
     @PostMapping
-    public ResponseEntity<ReturnProfileDTO> createProfile(@RequestBody ProfileDTO profileDTO) {
+    public ResponseEntity<ReturnProfileDTO> createProfile(@RequestBody @Valid ProfileDTO profileDTO) {
 
         Profile profile = new Profile();
         profile.setDescription(profileDTO.description());
@@ -61,7 +62,7 @@ public class ProfileController {
     }
 
     @PutMapping("/{profileId}")
-    public ResponseEntity<ReturnProfileDTO> updateProfile(@PathVariable Integer profileId,@RequestBody UpdateDTO updateDTO) {
+    public ResponseEntity<ReturnProfileDTO> updateProfile(@PathVariable Integer profileId,@RequestBody @Valid UpdateDTO updateDTO) {
 
         ProfileDTO profileDTO = new ProfileDTO(profileId, updateDTO.description());
 

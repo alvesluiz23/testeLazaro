@@ -48,7 +48,7 @@ public class ProfileServiceTest {
     @Test
     void shouldThrowExceptionWhenDescriptionTooShort() {
         Profile profile = new Profile();
-        String shortDescription = "Admin";
+        String shortDescription = "Admi";
         assertThrows(ProfileDescriptionTooShortException.class,
                 () -> profile.setDescription(shortDescription));
     }

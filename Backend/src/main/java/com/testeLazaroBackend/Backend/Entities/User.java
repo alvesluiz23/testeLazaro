@@ -28,7 +28,7 @@ public class User {
     private List<Profile> profiles;
 
     public void setName(String name) {
-        if (name.length() <= 10) {
+        if (name == null || name.trim().length() < 10) {
             throw new UserNameTooShortException(10);
         }
         this.name = name;

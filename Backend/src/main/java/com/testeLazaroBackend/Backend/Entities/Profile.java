@@ -23,7 +23,7 @@ public class Profile {
     private List<User> usuarios;
 
     public void setDescription(String description){
-        if(description.length() <= 5){
+        if (description == null || description.trim().length() < 5) {
             throw new ProfileDescriptionTooShortException(5);
         }
         this.description = description;
