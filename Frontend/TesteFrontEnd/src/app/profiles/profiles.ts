@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output, inject } from '@angular/core';
-import { ProfileInterface } from '../interface/user-profile-interface';
+import { ProfileInterface } from '../interface/profile-interface';
 import { ProfileService } from '../service/profile-service';
 import { errorToAlertMessage } from '../utils/http-error';
 

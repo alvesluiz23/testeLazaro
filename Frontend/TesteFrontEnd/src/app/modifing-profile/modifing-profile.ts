@@ -1,6 +1,6 @@
 import { Component, EventEmitter, inject, Input, Output, signal, Signal } from '@angular/core';
 import { UserInterface } from '../interface/user-interface';
-import { ProfileInterface } from '../interface/user-profile-interface';
+import { ProfileInterface } from '../interface/profile-interface';
 import { UserService } from '../service/user-service';
 import { ProfileService } from '../service/profile-service';
 import { NgModel } from '@angular/forms';

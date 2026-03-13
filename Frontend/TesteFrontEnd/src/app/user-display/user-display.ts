@@ -1,6 +1,6 @@
 import { LowerCasePipe } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { ProfileInterface } from '../interface/user-profile-interface';
+import { ProfileInterface } from '../interface/profile-interface';
 
 @Component({
   selector: 'app-user-display',

@@ -1,4 +1,4 @@
-import { ProfileInterface } from "./user-profile-interface";
+import { ProfileInterface } from "./profile-interface";
 
 export interface UserInterface {
     id: string,

@@ -1,5 +1,5 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { ProfileDTO } from '../dto/profile-dto';
+import { ProfileInterface } from '../interface/profile-interface';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { errorToAlertMessage } from '../utils/http-error';
@@ -8,7 +8,7 @@ import { errorToAlertMessage } from '../utils/http-error';
   providedIn: 'root',
 })
 export class ProfileService {
-    profiles = signal<ProfileDTO[]>([]);
+    profiles = signal<ProfileInterface[]>([]);
     loading = signal<boolean>(false);
     http = inject(HttpClient);
 
@@ -16,7 +16,7 @@ export class ProfileService {
 	  
     fetchProfiles() {
       this.loading.set(true);
-      this.http.get<ProfileDTO[]>(`${this.baseUrl}/profiles/`).subscribe({
+      this.http.get<ProfileInterface[]>(`${this.baseUrl}/profiles/`).subscribe({
         next: (response) => {
           this.profiles.set(response);
         },
@@ -30,12 +30,12 @@ export class ProfileService {
       });
     }
 
-    async createProfile(profile: ProfileDTO): Promise<ProfileDTO> {
+    async createProfile(profile: ProfileInterface): Promise<ProfileInterface> {
       this.loading.set(true);
       try {
-        const payload: ProfileDTO = profile;
+        const payload: ProfileInterface = profile;
         const created = await firstValueFrom(
-          this.http.post<ProfileDTO>(`${this.baseUrl}/profiles`, payload)
+          this.http.post<ProfileInterface>(`${this.baseUrl}/profiles`, payload)
         );
         return created;
       } finally {
@@ -43,12 +43,12 @@ export class ProfileService {
       }
     }
 
-    async updateProfile(id: number, description: string): Promise<ProfileDTO> {
+    async updateProfile(id: number, description: string): Promise<ProfileInterface> {
       this.loading.set(true);
       try {
         const payload = { description };
         const updated = await firstValueFrom(
-          this.http.put<ProfileDTO>(`${this.baseUrl}/profiles/${id}`, payload)
+          this.http.put<ProfileInterface>(`${this.baseUrl}/profiles/${id}`, payload)
         );
         return updated;
       } finally {
