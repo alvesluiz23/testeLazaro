@@ -22,15 +22,6 @@ import java.util.UUID;
 @Service
 public record UserService(UserRepository userRepository, ProfileRepository profileRepository) {
 
-    public Page<User> getUser(Pageable pageable) {
-        return userRepository.findAll(pageable);
-    }
-
-    public User getUser(UUID userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
-    }
-
     private List<Profile> transformIdInProfile(UserDTO userDTO){
         List<Profile> profilesFound = (List<Profile>) profileRepository.findAllById(userDTO.profiles().
                 stream().map(ProfileIdDTO::id).toList());
@@ -42,6 +33,16 @@ public record UserService(UserRepository userRepository, ProfileRepository profi
             );
         }
         return profilesFound;
+    }
+
+
+    public Page<User> getUser(Pageable pageable) {
+        return userRepository.findAll(pageable);
+    }
+
+    public User getUser(UUID userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
     }
 
     public User createUser(UserDTO userDTO) {
