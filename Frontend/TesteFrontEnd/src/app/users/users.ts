@@ -29,7 +29,7 @@ export class Users {
     }
 
     async openDelete(user: UserInterface) {
-       const confirmed = confirm(`Delete profile "${user.name}"?`);
+       const confirmed = confirm(`Delete user "${user.name}"?`);
        if (confirmed) {
         try {
           await this.userService.deleteUser(user.id);
