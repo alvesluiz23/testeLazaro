@@ -15,6 +15,7 @@
         }
     </div>
     <div>
+        <button (click)="userService.fetchUsers(numberPage)" [disabled]="userService.loading()">Reload</button>
         <button (click)="openCreate()">Create user</button>
     </div>
 
