@@ -24,9 +24,6 @@
     <app-modifing-profile [user]="selectedUser"></app-modifing-profile>
 
     }
-    @case (2) {
-    <app-deleting-user [userId]="selectedUser.id" (deleteEvent)="backToView()"></app-deleting-user>
-    }
     @case (3) {
      <app-creating-user (createEvent)="backToView()"></app-creating-user>
     }

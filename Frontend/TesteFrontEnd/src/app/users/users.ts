@@ -5,12 +5,11 @@ import { UserInterface } from '../interface/user-interface';
 import { ModifingProfile } from '../modifing-profile/modifing-profile';
 import { ProfileService } from '../service/profile-service';
 import { PageInterface } from '../interface/page-interface';
-import { DeletingUser } from '../deleting-user/deleting-user';
 import { CreatingUser } from "../creating-user/creating-user";
 
 @Component({
   selector: 'app-users',
-  imports: [UserDisplay, CreatingUser, DeletingUser, ModifingProfile],
+  imports: [UserDisplay, CreatingUser, ModifingProfile],
   templateUrl: './users.html',
   styleUrl: './users.css',
 })
@@ -29,9 +28,16 @@ export class Users {
 
     }
 
-    openDelete(user: UserInterface) {
-      this.selectedUser = user;
-      this.mode = 2;
+    async openDelete(user: UserInterface) {
+       const confirmed = confirm(`Delete profile "${user.name}"?`);
+       if (confirmed) {
+        try {
+          await this.userService.deleteUser(user.id);
+        } catch (error) {
+          alert("Error deleting user: " + error);
+        }
+       }
+       this.userService.fetchUsers(this.numberPage);
     }
 
     openCreate() {
